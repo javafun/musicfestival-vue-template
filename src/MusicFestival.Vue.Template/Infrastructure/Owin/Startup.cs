@@ -8,6 +8,7 @@ using EPiServer.Web.Routing;
 using EPiServer.Core;
 using Microsoft.AspNet.Identity;
 using EPiServer.ContentApi.Core;
+using EPiServer.ContentApi.OAuth;
 
 [assembly: OwinStartup(typeof(MusicFestival.Template.Infrastructure.Owin.Startup))]
 namespace MusicFestival.Template.Infrastructure.Owin
@@ -48,6 +49,13 @@ namespace MusicFestival.Template.Infrastructure.Owin
                 },
             });
 
+            app.UseContentApiIdentityOAuthAuthorization<ApplicationUserManager<ApplicationUser>, ApplicationUser>(new ContentApiOAuthOptions()
+            {
+                RequireSsl = false,
+                AccessTokenExpireTimeSpan = TimeSpan.FromMinutes(41),
+                RefreshTokenExpireTimeSpan = TimeSpan.FromDays(14),
+                //TokenEndpointPath = "your path" // by default, if not configured, its value is /api/episerver/auth/token
+            });
             app.UseExternalSignInCookie(DefaultAuthenticationTypes.ExternalCookie);
         }
 
